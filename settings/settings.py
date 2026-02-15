@@ -45,6 +45,7 @@ INSTALLED_APPS = [
 
     # сторонние пакеты
     'rest_framework',
+    'rest_framework_simplejwt',
 
     #Пользовательские приложения
     'apps.account',
@@ -138,16 +139,6 @@ DATABASES = {
     },
 }
 
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.TokenAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
-    ],
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticatedOrReadOnly',
-    ],
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 10
-}
+from .auth_settings import *
 
 AUTH_USER_MODEL = 'account.Account'
