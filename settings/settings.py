@@ -45,6 +45,7 @@ INSTALLED_APPS = [
 
     # сторонние пакеты
     'rest_framework',
+    'drf_spectacular',
     'rest_framework_simplejwt',
 
     #Пользовательские приложения
@@ -139,6 +140,8 @@ DATABASES = {
     },
 }
 
+AUTH_USER_MODEL = 'account.Account'
+
 from .auth_settings import *
 
-AUTH_USER_MODEL = 'account.Account'
+from .swagger_settings import *

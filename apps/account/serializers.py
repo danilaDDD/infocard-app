@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from rest_framework_simplejwt.tokens import RefreshToken
 
 from apps.account.models import Account
 
@@ -13,19 +14,37 @@ class AccountRegistrationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Account
-        fields = ('first_name', 'last_name', 'patronymic',
+        fields = ('username', 'first_name', 'last_name', 'patronymic',
                   'email', 'phone',  'password', 'birth_date',
                   'gender', 'telegram_id', )
 
     def create(self, validated_data):
-        account = Account.objects.create_user(
-            email=validated_data['email'],
-            password=validated_data['password']
-        )
-        return account
+        return Account.objects.create_user(**validated_data)
 
 class AccountSerializer(serializers.ModelSerializer):
     class Meta:
         model = Account
         fields = ('id', 'username', 'first_name', 'last_name', 'patronymic',
                   'email', 'phone',  'birth_date', 'gender', 'telegram_id', )
+
+class TokensSerializer(serializers.Serializer):
+    refresh = serializers.CharField()
+    access = serializers.CharField()
+
+class AccountRegistrationResponseSerializer(serializers.Serializer):
+    user = AccountSerializer()
+    tokens = TokensSerializer()
+
+    def to_representation(self, instance: Account):
+        user_data = AccountSerializer(instance).data
+
+        refresh = RefreshToken.for_user(instance)
+        tokens_data = {
+            'refresh': str(refresh),
+            'access': str(refresh.access_token),
+        }
+
+        return {
+            'user': user_data,
+            'tokens': tokens_data,
+        }
