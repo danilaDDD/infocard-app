@@ -3,6 +3,7 @@ from rest_framework import status
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from apps.account.models import Account
+from apps.common.asserts import assert_error_response
 from apps.common.jwt_utils import check_jwt, TYPE_ACCESS_TOKEN, TYPE_REFRESH_TOKEN
 from apps.common.request_generator import gen_valid_registration_request_data
 
@@ -32,8 +33,7 @@ class TestRefreshRequest:
         req_data = {'refresh': 'invalid_token'}
         resp = self.do_request(req_data, access_token=self.primary_token.token)
 
-        assert resp.status_code == 401
-        assert len(resp.data['detail']) > 0
+        assert_error_response(resp, 401)
 
     @pytest.mark.parametrize("req_data",  [
         {},
@@ -44,16 +44,14 @@ class TestRefreshRequest:
         self.create_account()
         resp = self.do_request(req_data, access_token=self.primary_token.token)
 
-        assert resp.status_code == 400
-        assert len(resp.data['refresh']) > 0
+        assert_error_response(resp, 400)
 
     def test_when_invalid_primary_token_then_return_401(self):
         valid_refresh_token = RefreshToken.for_user(self.create_account())
         req_data = {'refresh': str(valid_refresh_token)}
         resp = self.do_request(req_data, access_token='invalid_primary_token')
 
-        assert resp.status_code == 401
-        assert len(resp.data['detail']) > 0
+        assert_error_response(resp, 401)
 
     def test_when_not_existing_account_then_return_401(self):
         valid_refresh_token = RefreshToken.for_user(self.create_account())
@@ -61,8 +59,7 @@ class TestRefreshRequest:
         Account.objects.all().delete()
         resp = self.do_request(req_data, access_token=self.primary_token.token)
 
-        assert resp.status_code == 401
-        assert len(resp.data['detail']) > 0
+        assert_error_response(resp, 401)
 
     def create_account(self) -> Account:
         account_kwargs = gen_valid_registration_request_data()

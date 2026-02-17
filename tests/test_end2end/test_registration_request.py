@@ -2,6 +2,7 @@ import pytest
 from rest_framework.response import Response
 
 from apps.account.models import Account
+from apps.common.asserts import assert_error_response
 from apps.common.jwt_utils import TYPE_ACCESS_TOKEN, check_jwt, TYPE_REFRESH_TOKEN
 from apps.common.request_generator import gen_valid_registration_request_data, gen_invalid_registration_request_data
 
@@ -47,18 +48,14 @@ class TestRegistrationRequest:
         valid_resp_data = gen_valid_registration_request_data()
         resp = self.do_request(valid_resp_data, access_token="invalid_token")
 
-        assert resp.status_code == 401
-        assert len(resp.data["detail"]) > 0
+        assert_error_response(resp, 401)
 
     @pytest.mark.parametrize("request_data",
         gen_invalid_registration_request_data()
     )
     def test_when_invalid_response_data_then_return_400(self, request_data: dict):
-        print(request_data)
         resp = self.do_request(request_data, access_token=self.primary_token.token)
-
-        assert resp.status_code == 400
-        assert len(resp.data.items()) > 0
+        assert_error_response(resp, 400)
 
     def do_request(self, request_data, access_token=None) -> Response:
 
