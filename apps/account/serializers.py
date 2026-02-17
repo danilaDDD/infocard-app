@@ -25,6 +25,10 @@ class LoginSerializer(serializers.Serializer):
     password = serializers.CharField(write_only=True, required=True, allow_blank=False, min_length=6)
 
 
+class RefreshTokenSerializer(serializers.Serializer):
+    refresh = serializers.CharField(required=True, allow_blank=False, min_length=6)
+
+
 class AccountSerializer(serializers.ModelSerializer):
     class Meta:
         model = Account
