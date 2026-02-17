@@ -5,11 +5,12 @@ from apps.account.models import Account
 
 
 class AccountRegistrationSerializer(serializers.ModelSerializer):
-    first_name = serializers.CharField(required=True, allow_blank=False)
-    last_name = serializers.CharField(required=True, allow_blank=False)
-    email = serializers.EmailField(required=True, allow_blank=False)
-    phone = serializers.CharField(required=True, allow_blank=False)
-    password = serializers.CharField(write_only=True, required=True, allow_blank=False)
+    username = serializers.CharField(required=True, allow_blank=False, min_length=3)
+    first_name = serializers.CharField(required=True, allow_blank=False, min_length=3)
+    last_name = serializers.CharField(required=True, allow_blank=False, min_length=3)
+    email = serializers.EmailField(required=True, allow_blank=False, min_length=3)
+    phone = serializers.CharField(required=True, allow_blank=False, min_length=3, max_length=15)
+    password = serializers.CharField(write_only=True, required=True, allow_blank=False, min_length=6)
     birth_date = serializers.DateField(required=True, allow_null=True)
 
     class Meta:
@@ -18,8 +19,11 @@ class AccountRegistrationSerializer(serializers.ModelSerializer):
                   'email', 'phone',  'password', 'birth_date',
                   'gender', 'telegram_id', )
 
-    def create(self, validated_data):
-        return Account.objects.create_user(**validated_data)
+
+class LoginSerializer(serializers.Serializer):
+    username = serializers.CharField(required=True, allow_blank=False, min_length=3)
+    password = serializers.CharField(write_only=True, required=True, allow_blank=False, min_length=6)
+
 
 class AccountSerializer(serializers.ModelSerializer):
     class Meta:
@@ -27,9 +31,11 @@ class AccountSerializer(serializers.ModelSerializer):
         fields = ('id', 'username', 'first_name', 'last_name', 'patronymic',
                   'email', 'phone',  'birth_date', 'gender', 'telegram_id', )
 
+
 class TokensSerializer(serializers.Serializer):
     refresh = serializers.CharField()
     access = serializers.CharField()
+
 
 class AccountRegistrationResponseSerializer(serializers.Serializer):
     user = AccountSerializer()
@@ -48,3 +54,17 @@ class AccountRegistrationResponseSerializer(serializers.Serializer):
             'user': user_data,
             'tokens': tokens_data,
         }
+
+
+class AuthResponseSerializer(serializers.Serializer):
+    access = serializers.CharField(required=True, allow_blank=False)
+    refresh = serializers.CharField(required=True, allow_blank=False)
+
+    def to_representation(self, instance: Account):
+        refresh = RefreshToken.for_user(instance)
+        tokens_data = {
+            'refresh': str(refresh),
+            'access': str(refresh.access_token),
+        }
+
+        return tokens_data

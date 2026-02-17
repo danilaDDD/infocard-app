@@ -1,4 +1,4 @@
-def gen_valid_registration_request_data(gender=None, telegram_id=None) -> dict:
+def gen_valid_registration_request_data(**kwargs) -> dict:
     data =  {
         "first_name": "first_name",
         "last_name": "last_name",
@@ -9,10 +9,7 @@ def gen_valid_registration_request_data(gender=None, telegram_id=None) -> dict:
         "birth_date": "2000-01-01",
     }
 
-    if gender is not None:
-        data["gender"] = gender
-    if telegram_id is not None:
-        data["telegram_id"] = telegram_id
+    data.update(kwargs)
 
     return data
 

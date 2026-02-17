@@ -2,8 +2,8 @@ import pytest
 from rest_framework.response import Response
 
 from apps.account.models import Account
-from apps.common.account_response_generator import gen_valid_registration_request_data, \
-    gen_invalid_registration_request_data
+from apps.common.jwt_utils import TYPE_ACCESS_TOKEN, check_jwt, TYPE_REFRESH_TOKEN
+from apps.common.request_generator import gen_valid_registration_request_data, gen_invalid_registration_request_data
 
 
 @pytest.mark.django_db
@@ -35,11 +35,13 @@ class TestRegistrationRequest:
 
         tokens = resp_data.get("tokens")
         assert tokens is not None
-        assert len(tokens.get("access")) > 0
-        assert len(tokens.get("refresh")) > 0
 
         accounts = Account.objects.all()
         assert len(accounts) == 1
+        account = accounts[0]
+
+        assert check_jwt(tokens.get("access"), account, type=TYPE_ACCESS_TOKEN)
+        assert check_jwt(tokens.get("refresh"), account, type=TYPE_REFRESH_TOKEN)
 
     def test_when_invalid_access_token_then_return_401(self):
         valid_resp_data = gen_valid_registration_request_data()

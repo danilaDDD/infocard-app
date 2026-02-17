@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 import json
 import os
+from datetime import timedelta
 
 from dotenv import dotenv_values
 
@@ -142,6 +143,26 @@ DATABASES = {
 
 AUTH_USER_MODEL = 'account.Account'
 
-from .auth_settings import *
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework.authentication.SessionAuthentication',  # для удобства разработки
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+ACCESS_LIFETIME = timedelta(minutes=5)
+REFRESH_LIFETIME = timedelta(hours=1)
+JWT_ALGORITHM = 'HS256'
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': ACCESS_LIFETIME,
+    'REFRESH_TOKEN_LIFETIME': REFRESH_LIFETIME,
+    'ALGORITHM': JWT_ALGORITHM,
+    'SIGNING_KEY': SECRET_KEY,
+}
 
 from .swagger_settings import *
