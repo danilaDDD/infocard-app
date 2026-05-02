@@ -165,4 +165,6 @@ SIMPLE_JWT = {
     'SIGNING_KEY': SECRET_KEY,
 }
 
+CELERY_BROKER_URL = SECRETS.get('CELERY_BROKER_URL', 'redis://localhost:6379/0')
+
 from .swagger_settings import *
