@@ -9,7 +9,7 @@ __pycache__
 .Trashes
 vscode
 
-config
+conf
 
 cache
 /media
@@ -19,3 +19,5 @@ cache
 
 env
 venv
+CLAUDE.md
+.claude/

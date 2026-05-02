@@ -21,7 +21,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 def load_env() -> dict:
     env = os.environ.get('ENV', 'dev')
-    path = os.path.join(BASE_DIR, 'config', f'.env.{env}')
+    path = os.path.join(BASE_DIR, 'conf', f'.env.{env}')
     return dotenv_values(path)
 
 SECRETS = load_env()
