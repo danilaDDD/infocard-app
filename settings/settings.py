@@ -151,7 +151,7 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
     ),
-    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    'DEFAULT_SCHEMA_CLASS': 'apps.common.schema.PrimaryTokenAutoSchema',
 }
 
 ACCESS_LIFETIME = timedelta(minutes=5)
