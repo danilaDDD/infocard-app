@@ -19,6 +19,13 @@ class AccountRegistrationSerializer(serializers.ModelSerializer):
                   'email', 'phone',  'password', 'birth_date',
                   'gender', 'telegram_id', )
 
+    def create(self, validated_data):
+        password = validated_data.pop('password')
+        account = Account(**validated_data)
+        account.set_password(password)
+        account.save()
+        return account
+
 
 class LoginSerializer(serializers.Serializer):
     username = serializers.CharField(required=True, allow_blank=False, min_length=3)
