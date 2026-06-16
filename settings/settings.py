@@ -138,6 +138,9 @@ DATABASES = {
         'HOST': SECRETS.get('DB_HOST', ''),
         'PASSWORD': SECRETS.get('DB_PASSWORD', ''),
         'PORT': SECRETS.get('DB_PORT', ''),
+        'TEST': {
+            'TEMPLATE': 'template0',
+        },
     },
 }
 
