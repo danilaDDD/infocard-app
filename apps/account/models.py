@@ -9,6 +9,10 @@ class PrimaryToken(AbsCreated, AbsActive):
     title = models.CharField('Название', max_length=255)
     token = models.CharField('Токен', max_length=255)
 
+    class Meta:
+        verbose_name = 'Первичный токен'
+        verbose_name_plural = 'Первичные токены'
+
 class Account(AbsCreated, AbstractUser):
     NONE_GENDER = 'none'
     MALE_GENDER = 'male'
